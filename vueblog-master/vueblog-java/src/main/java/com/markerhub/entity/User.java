@@ -11,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -44,9 +45,11 @@ public class User implements Serializable {
 
     private Integer status;
 
-    private LocalDateTime created;
+    private Date created;
 
-    private LocalDateTime lastLogin;
+    private Date lastLogin;
+
+    private String ip;
 
 
 }

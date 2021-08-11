@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.markerhub.common.lang.Result;
 import com.markerhub.entity.Blog;
+import com.markerhub.mapper.BlogMapper;
 import com.markerhub.service.BlogService;
 import com.markerhub.util.ShiroUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -30,21 +32,37 @@ public class BlogController {
 
     @Autowired
     BlogService blogService;
-
+@Autowired
+    BlogMapper blogMapper;
     @GetMapping("/blogs")
-    public Result list(@RequestParam(defaultValue = "1") Integer currentPage) {
+    public Result list(@RequestParam(defaultValue = "2") Integer currentPage) {
 
         Page page = new Page(currentPage, 5);
-        IPage pageData = blogService.page(page, new QueryWrapper<Blog>().orderByDesc("created"));
+        IPage pageData = blogMapper.selectPage(page, new QueryWrapper<Blog>());
         return Result.succ(pageData);
     }
 
     @GetMapping("/blog/{id}")
     public Result detail(@PathVariable(name = "id") Long id) {
         Blog blog = blogService.getById(id);
-        Assert.notNull(blog, "该博客已被删除");
+        Assert.notNull(blog, "该博客不存在或已被删除");
 
         return Result.succ(blog);
+    }
+//    @PostMapping("/blog/star")
+//    public Result star(@Validated @RequestBody Blog blog) {
+//        blog.setStar(blog.getStar()+1);
+//        return Result.succ(null);
+//    }
+//    @PostMapping("/blog/like")
+//    public Result like(@Validated @RequestBody Blog blog) {
+//        blog.setLike(blog.getLike()+1);
+//        return Result.succ(null);
+//    }
+    @GetMapping ("/blog/search/{content}")
+    public Result like(@PathVariable(name = "content") String content) {
+
+        return Result.succ(null);
     }
 
     @RequiresAuthentication
