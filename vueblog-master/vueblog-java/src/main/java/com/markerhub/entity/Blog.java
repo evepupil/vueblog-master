@@ -43,7 +43,7 @@ public class Blog implements Serializable {
 
     private Integer status;
 
-    private Integer like;
+    private Integer favorite;
 
     private  Integer star;
     @JsonFormat(pattern="yyyy-MM-dd")
