@@ -3,20 +3,18 @@
     <Header></Header>
 
     <div class="block">
-      <el-timeline>
 
-        <el-timeline-item :timestamp="blog.created" placement="top" v-for="blog in blogs">
-          <el-card>
+        <el-card  class="article" :timestamp="blog.created" placement="top" v-for="blog in blogs" >
             <h4>
               <router-link :to="{name: 'BlogDetail', params: {blogId: blog.id}}">
                 {{blog.title}}
               </router-link>
             </h4>
             <p>{{blog.description}}</p>
-          </el-card>
-        </el-timeline-item>
-
-      </el-timeline>
+            <p>发布于{{blog.created}}</p>
+            <p>{{blog.recent}}</p>
+            <p>{{blog.favorite}}</p>
+        </el-card>
 
       <el-pagination class="mpage"
                      background
@@ -66,7 +64,9 @@
 </script>
 
 <style scoped>
+.article{
 
+}
   .mpage {
     margin: 0 auto;
     text-align: center;

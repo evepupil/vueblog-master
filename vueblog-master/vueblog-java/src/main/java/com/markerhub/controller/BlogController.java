@@ -35,10 +35,10 @@ public class BlogController {
 @Autowired
     BlogMapper blogMapper;
     @GetMapping("/blogs")
-    public Result list(@RequestParam(defaultValue = "2") Integer currentPage) {
+    public Result list(@RequestParam(defaultValue = "1") Integer currentPage) {
 
         Page page = new Page(currentPage, 5);
-        IPage pageData = blogMapper.selectPage(page, new QueryWrapper<Blog>());
+        IPage pageData = blogMapper.selectPage(page, new QueryWrapper<Blog>().orderByDesc("created"));
         return Result.succ(pageData);
     }
 

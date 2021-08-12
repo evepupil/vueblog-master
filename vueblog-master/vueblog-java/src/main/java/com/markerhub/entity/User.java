@@ -51,5 +51,9 @@ public class User implements Serializable {
 
     private String ip;
 
+    private String sign;
+
+    private String nickname;
+
 
 }

@@ -1,10 +1,28 @@
 <template>
   <div class="m-content">
-    <h3>欢迎来到MarkerHub的博客</h3>
-    <div class="block">
-      <el-avatar :size="50" :src="user.avatar"></el-avatar>
-      <div>{{ user.username }}</div>
-    </div>
+	  <div class="title"    >
+      <ul class="top"
+      >
+        <li  >
+          <p class="name">论坛广场</p>
+        </li>
+        <li  >
+          <el-input v-model="search" maxlength="20" placeholder="请输入内容" ></el-input>
+        </li>
+        <li  >
+          <el-button type="" icon="el-icon-search">搜索</el-button>
+        </li>
+        <li  >
+          <div class="user" >
+            <el-avatar :size="50"  shape="square" :src="user.avatar"></el-avatar>
+
+            <p class="username">{{user.nickname}}</p>
+            <span class="p-intro" >{{user.sign}}</span>
+          </div>
+        </li>
+      </ul>
+
+	  </div>
 
     <div class="maction">
       <span><el-link href="/blogs">主页</el-link></span>
@@ -23,16 +41,31 @@
 <script>
   export default {
     name: "Header",
+	
     data() {
       return {
+		  search:'',
         user: {
+		      nickname:'',
+		      sign:'',
           username: '请先登录',
-          avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+          avatar: 'https://blog-1257029975.cos.ap-beijing.myqcloud.com/head/QQ%E5%9B%BE%E7%89%8720210530121836.jpg'
         },
         hasLogin: false
       }
     },
     methods: {
+		// Tosearch(){
+		// 	const _this=this
+		// 	_this.$axios.get("/blog/search"),{
+		// 		headers:{
+		// 			"Authorization": localStorage.getItem("token")
+		// 		},
+		// 		}).then(res=>{
+					
+		// 		})
+		// 	},
+		
       logout() {
         const _this = this
         _this.$axios.get("/logout", {
@@ -49,7 +82,9 @@
     created() {
       if(this.$store.getters.getUser.username) {
         this.user.username = this.$store.getters.getUser.username
+        this.user.nickname = this.$store.getters.getUser.nickname
         this.user.avatar = this.$store.getters.getUser.avatar
+        this.user.sign = this.$store.getters.getUser.sign
 
         this.hasLogin = true
       }
@@ -60,6 +95,12 @@
 
 <style scoped>
 
+.top{
+  list-style-type:none
+}
+li{
+  float:left;
+}
   .m-content {
     max-width: 960px;
     margin: 0 auto;

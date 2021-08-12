@@ -20,7 +20,7 @@
 <script>
   import 'github-markdown-css'
   import Header from "../components/Header";
-
+  // import Comment from "../components/Comment";
   export default {
     name: "BlogDetail.vue",
     components: {Header},
