@@ -1,5 +1,7 @@
 package com.markerhub.common.lang;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.markerhub.entity.Blog;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +14,7 @@ public class Result implements Serializable {
     private Object data;
 
     public static Result succ(Object data) {
+
         return succ(200, "操作成功", data);
     }
 

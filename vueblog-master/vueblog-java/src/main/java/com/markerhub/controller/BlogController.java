@@ -17,7 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * <p>
@@ -32,11 +34,10 @@ public class BlogController {
 
     @Autowired
     BlogService blogService;
-@Autowired
+    @Autowired
     BlogMapper blogMapper;
     @GetMapping("/blogs")
     public Result list(@RequestParam(defaultValue = "1") Integer currentPage) {
-
         Page page = new Page(currentPage, 5);
         IPage pageData = blogMapper.selectPage(page, new QueryWrapper<Blog>().orderByDesc("created"));
         return Result.succ(pageData);
@@ -59,12 +60,6 @@ public class BlogController {
 //        blog.setLike(blog.getLike()+1);
 //        return Result.succ(null);
 //    }
-    @GetMapping ("/blog/search/{content}")
-    public Result like(@PathVariable(name = "content") String content) {
-
-        return Result.succ(null);
-    }
-
     @RequiresAuthentication
     @PostMapping("/blog/edit")
     public Result edit(@Validated @RequestBody Blog blog) {
@@ -90,6 +85,17 @@ public class BlogController {
         blogService.saveOrUpdate(temp);
 
         return Result.succ(null);
+    }
+    @GetMapping(value = "/search")
+    public  Result searchBlog(@RequestParam String keywords){
+        QueryWrapper<Blog> queryWrapper=new QueryWrapper<>();
+        queryWrapper.like(isNotBlank(keywords),"title",keywords);
+        queryWrapper.like(isNotBlank(keywords),"content",keywords);
+        ArrayList<Blog> list= (ArrayList<Blog>) blogMapper.selectList(queryWrapper);
+        return Result.succ(list);
+    }
+    public boolean isNotBlank(String s){
+        return !(s==null||s.equals(""));
     }
 
 

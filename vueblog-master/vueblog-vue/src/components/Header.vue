@@ -1,10 +1,9 @@
 <template>
   <div class="m-content">
 	  <div class="title"    >
-      <ul class="top"
-      >
+      <ul class="top">
         <li  >
-          <p class="name">论坛广场</p>
+          <span><el-link href="/blogs" >论坛广场</el-link></span>
         </li>
         <li  >
           <el-input v-model="search" maxlength="20" placeholder="请输入内容" ></el-input>
@@ -15,7 +14,6 @@
         <li  >
           <div class="user" >
             <el-avatar :size="50"  shape="square" :src="user.avatar"></el-avatar>
-
             <p class="username">{{user.nickname}}</p>
             <span class="p-intro" >{{user.sign}}</span>
           </div>

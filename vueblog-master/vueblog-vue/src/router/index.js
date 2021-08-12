@@ -4,7 +4,7 @@ import Login from '../views/Login.vue'
 import Blogs from '../views/Blogs.vue'
 import BlogEdit from '../views/BlogEdit.vue'
 import BlogDetail from '../views/BlogDetail.vue'
-
+import Comment from'../views/Comment.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -16,7 +16,8 @@ const routes = [
   {
     path: '/blogs',
     name: 'Blogs',
-    component: Blogs
+    component: Blogs,
+
   },
   {
     path: '/login',
@@ -34,7 +35,10 @@ const routes = [
   {
     path: '/blog/:blogId',
     name: 'BlogDetail',
-    component: BlogDetail
+    components: {
+      blogDetail: BlogDetail,
+      comment: Comment
+    }
   },
   {
     path: '/blog/:blogId/edit',

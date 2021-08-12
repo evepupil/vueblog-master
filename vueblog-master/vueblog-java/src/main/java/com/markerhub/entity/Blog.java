@@ -38,7 +38,7 @@ public class Blog implements Serializable {
     @NotBlank(message = "内容不能为空")
     private String content;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime created;
 
     private Integer status;
@@ -46,7 +46,7 @@ public class Blog implements Serializable {
     private Integer favorite;
 
     private  Integer star;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private LocalDateTime recent;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;

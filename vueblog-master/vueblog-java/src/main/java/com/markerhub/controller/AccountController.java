@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @RestController
@@ -50,7 +53,7 @@ public class AccountController {
         }
         String jwt = jwtUtils.generateToken(user.getId());
 
-        user.setLastLogin(new Date());
+        user.setLastLogin(date2LocalDateTime(new Date()));
         user.setIp(request.getRemoteAddr());
         userMapper.updateById(user);
         response.setHeader("Authorization", jwt);
@@ -75,8 +78,34 @@ public class AccountController {
     }
 
     @PostMapping("/register")
-    public Result register (){
-        return new Result();
-    }
+    public Result register (@Validated @RequestBody LoginDto loginDto, HttpServletRequest request,
+                            HttpServletResponse response){
+        User user = userService.getOne(new QueryWrapper<User>().eq("username", loginDto.getUsername()));
+        if(user!=null){
+            return Result.fail("用户已存在");
+        }
+        User newuser=new User();
+        String jwt = jwtUtils.generateToken(user.getId());
 
+        user.setLastLogin(date2LocalDateTime(new Date()));
+        user.setIp(request.getRemoteAddr());
+        userMapper.updateById(user);
+        response.setHeader("Authorization", jwt);
+        response.setHeader("Access-control-Expose-Headers", "Authorization");
+
+        return Result.succ(MapUtil.builder()
+                .put("id", user.getId())
+                .put("username", user.getUsername())
+                .put("avatar", user.getAvatar())
+                .put("email", user.getEmail())
+                .put("sign",user.getSign())
+                .put("nickname",user.getNickname())
+                .map()
+        );
+    }
+    public static LocalDateTime date2LocalDateTime(Date date) {
+        Instant instant = date.toInstant();
+        ZoneId zone = ZoneId.systemDefault();
+        return LocalDateTime.ofInstant(instant, zone);
+    }
 }

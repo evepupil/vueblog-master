@@ -4,16 +4,17 @@
 
     <div class="block">
 
-        <el-card  class="article" :timestamp="blog.created" placement="top" v-for="blog in blogs" >
+        <el-card  class="article"  placement="top" v-for="blog in blogs" >
             <h4>
               <router-link :to="{name: 'BlogDetail', params: {blogId: blog.id}}">
                 {{blog.title}}
               </router-link>
             </h4>
             <p>{{blog.description}}</p>
-            <p>发布于{{blog.created}}</p>
-            <p>{{blog.recent}}</p>
+            <p class="time" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" >发布于{{blog.created}}</p>
+            <p class="time" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm"> {{blog.recent}}</p>
             <p>{{blog.favorite}}</p>
+            <p>{{blog.star}}</p>
         </el-card>
 
       <el-pagination class="mpage"
@@ -50,15 +51,16 @@
         _this.$axios.get("/blogs?currentPage=" + currentPage).then(res => {
           console.log(res)
           _this.blogs = res.data.data.records
+          console.log(" time " + _this.blogs[0].recent)
           _this.currentPage = res.data.data.current
           _this.total = res.data.data.total
           _this.pageSize = res.data.data.size
-
         })
       }
     },
     created() {
-      this.page(1)
+      this.page(1);
+      //console.log(blogs[1])
     }
   }
 </script>
@@ -71,5 +73,6 @@
     margin: 0 auto;
     text-align: center;
   }
+
 
 </style>
