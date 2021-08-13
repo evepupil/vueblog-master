@@ -44,7 +44,7 @@
       return {
 		  search:'',
         user: {
-		      nickname:'',
+		      nickname:'请先登录',
 		      sign:'',
           username: '请先登录',
           avatar: 'https://blog-1257029975.cos.ap-beijing.myqcloud.com/head/QQ%E5%9B%BE%E7%89%8720210530121836.jpg'

@@ -23,6 +23,9 @@ import java.time.LocalTime;
 @Accessors(chain = true)
 @TableName("comment")
 public class Comment {
+    public Comment(){
+
+    }
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     private String nickname;

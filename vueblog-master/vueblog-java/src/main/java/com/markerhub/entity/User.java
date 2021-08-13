@@ -27,6 +27,9 @@ import java.util.Date;
 @Accessors(chain = true)
 @TableName("m_user")
 public class User implements Serializable {
+    public User(){
+
+    }
 
     private static final long serialVersionUID = 1L;
 

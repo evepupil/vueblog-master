@@ -31,14 +31,19 @@
           </p>
           <p>{{comment.favorite}}</p>
           <div>
-
           </div>
         </div>
       </el-card>
     </div>
-    <el-input tpye="textarea" :autosize="{ minRows: 2, maxRows: 5}" placeholder="请输入内容" v-model="yourcomment">
+    <el-input  tpye="textarea" :autosize="{ minRows: 2, maxRows: 5}" placeholder="请输入内容" v-model="CommentAddDto.yourcomment">
     </el-input>
-
+    <el-button v-bind:icon=btnicon[succu] @click.native="addcomment"> 提交</el-button>
+    <el-alert
+        title="成功提示的文案"
+        type="success"
+        center
+        show-icon>
+    </el-alert>
   </div>
 </template>
 
@@ -47,18 +52,26 @@
   import Header from "../components/Header";
   export default {
     name: "BlogDetail.vue",
+
     components: {Header},
     data() {
       return {
+        succu: 0,  //0 ,1提交中,2提交成功
+        btnicon:['el-icon-caret-top','el-icon-loading','el-icon-check'],
+        //btnicon:"el-icon-loading",
         comments: {},
-        yourcomment:"",
+        CommentAddDto:{
+          blogId: 0,
+          yourcomment:"",
+          user:""
+        },
         blog: {
           id: "",
           title: "",
           content: ""
         },
         ownBlog: false
-      }
+      };
     },
     created() {
       const blogId = this.$route.params.blogId
@@ -84,12 +97,25 @@
 
     }
     ,
-    addcomment() {
-      const blogId = this.$route.params.blogId
-      this.$axios.get("/commentadd?blogid=" + blogId + "&content=" + yourcomment).then(res => {
-        console.log(res)
-
-      })
+    methods:{
+      addcomment() {
+        this.succu=2
+        const _this = this
+        const blogId = this.$route.params.blogId
+        console.log('blogid:'+blogId)
+        this.CommentAddDto.blogId=blogId
+        this.CommentAddDto.user=_this.$store.getters.getUser
+        this.$axios.post("/commentadd", this.CommentAddDto).then(res => {
+          this.succu=3
+          this.CommentAddDto.yourcomment=''
+          console.log(res)
+          _this.$axios.get("/comments?blogid=" + blogId).then(res => {
+            console.log(res)
+            this.comments = res.data.data
+          })
+        })
+        this.succu=0
+      }
     }
   }
 </script>
