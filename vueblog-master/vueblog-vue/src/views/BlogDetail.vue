@@ -104,6 +104,7 @@
           //console.log(res)
           _this.$axios.get("/comments?blogid=" + blogId).then(res => {
             this.succu=0
+
             //console.log(res)
             this.comments = res.data.data
           })
