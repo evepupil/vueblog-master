@@ -9,6 +9,7 @@ import com.markerhub.common.lang.Result;
 import com.markerhub.entity.User;
 import com.markerhub.mapper.UserMapper;
 import com.markerhub.service.UserService;
+import com.markerhub.util.DateTransfer;
 import com.markerhub.util.JwtUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -52,8 +53,7 @@ public class AccountController {
             return Result.fail("密码不正确");
         }
         String jwt = jwtUtils.generateToken(user.getId());
-
-        user.setLastLogin(date2LocalDateTime(new Date()));
+        user.setLastLogin(DateTransfer.date2LocalDateTime(new Date()));
         user.setIp(request.getRemoteAddr());
         userMapper.updateById(user);
         response.setHeader("Authorization", jwt);
@@ -87,7 +87,7 @@ public class AccountController {
         User newuser=new User();
         String jwt = jwtUtils.generateToken(user.getId());
 
-        user.setLastLogin(date2LocalDateTime(new Date()));
+        user.setLastLogin(DateTransfer.date2LocalDateTime(new Date()));
         user.setIp(request.getRemoteAddr());
         userMapper.updateById(user);
         response.setHeader("Authorization", jwt);
@@ -103,9 +103,5 @@ public class AccountController {
                 .map()
         );
     }
-    public static LocalDateTime date2LocalDateTime(Date date) {
-        Instant instant = date.toInstant();
-        ZoneId zone = ZoneId.systemDefault();
-        return LocalDateTime.ofInstant(instant, zone);
-    }
+
 }

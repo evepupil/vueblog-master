@@ -39,7 +39,7 @@ public class BlogController {
     @GetMapping("/blogs")
     public Result list(@RequestParam(defaultValue = "1") Integer currentPage) {
         Page page = new Page(currentPage, 5);
-        IPage pageData = blogMapper.selectPage(page, new QueryWrapper<Blog>().orderByDesc("created"));
+        IPage pageData = blogMapper.selectPage(page, new QueryWrapper<Blog>().orderByDesc("recent"));
         return Result.succ(pageData);
     }
 
@@ -72,13 +72,12 @@ public class BlogController {
             // 只能编辑自己的文章
             System.out.println(ShiroUtil.getProfile().getId());
             Assert.isTrue(temp.getUserId().longValue() == ShiroUtil.getProfile().getId().longValue(), "没有权限编辑");
-
         } else {
-
             temp = new Blog();
             temp.setUserId(ShiroUtil.getProfile().getId());
             temp.setCreated(LocalDateTime.now());
             temp.setStatus(0);
+            temp.setRecent(LocalDateTime.now());
         }
 
         BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status");
@@ -86,7 +85,7 @@ public class BlogController {
 
         return Result.succ(null);
     }
-    @GetMapping(value = "/search")
+    @GetMapping(value = "/blog/search")
     public  Result searchBlog(@RequestParam String keywords){
         QueryWrapper<Blog> queryWrapper=new QueryWrapper<>();
         queryWrapper.like(isNotBlank(keywords),"title",keywords);

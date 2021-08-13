@@ -16,31 +16,30 @@
     <el-button type="succss" icon="el-icon-star-off" circle></el-button>
 
     <h4>---------------------</h4>
-
-    <el-input  tpye="textarea" :autosize="{ minRows: 2, maxRows: 5}" placeholder="请输入内容" v-model="CommentAddDto.yourcomment"
-               maxlength="200"           show-word-limit>
-    </el-input>
-    <el-button v-bind:icon=btnicon[succu] @click.native="addcomment"> 提交</el-button>
     <div v-for="comment in comments">
 
       <div class="user">
-        <el-avatar :size="50" shape="square" :src="comment.avatar"></el-avatar>
-        <p class="nickname">{{ comment.nickname }}
-        </p>
-
-        <span class="p-intro">さあ、始めようか</span>
+        <el-avatar :size="50" shape="square" :src="comment.avatar" class="user-img"></el-avatar>
+        <span class="nickname">{{ comment.nickname }}
+        </span>
       </div>
-      <el-card>
-        <div >
-          <p v-text="comment.content"></p>
-          <p>{{comment.time}}</p>
-          <p>{{comment.favorite}}</p>
+      <el-card class="card">
+        <div>
+          <p>
+            {{ comment.content }}
+          </p>
+          <p class="favorite">
+            <span>点赞</span>
+            {{comment.favorite}}
+          </p>
           <div>
           </div>
         </div>
       </el-card>
     </div>
-
+    <el-input  tpye="textarea" :autosize="{ minRows: 2, maxRows: 5}" placeholder="请输入内容" v-model="CommentAddDto.yourcomment">
+    </el-input>
+    <el-button v-bind:icon=btnicon[succu] @click.native="addcomment"> 提交</el-button>
     <el-alert
         title="成功提示的文案"
         type="success"
@@ -68,7 +67,11 @@
           yourcomment:"",
           user:""
         },
-        blog: '',
+        blog: {
+          id: "",
+          title: "",
+          content: ""
+        },
         ownBlog: false
       };
     },
@@ -77,34 +80,39 @@
       console.log(blogId)
       const _this = this
       this.$axios.get('/blog/' + blogId).then(res => {
-        this.blog = res.data.data
-        let MardownIt = require("markdown-it")
-        let md = new MardownIt()
-        let result = md.render(this.blog.content)
+        const blog = res.data.data
+        _this.blog.id = blog.id
+        _this.blog.title = blog.title
+
+        var MardownIt = require("markdown-it")
+        var md = new MardownIt()
+
+        var result = md.render(blog.content)
         _this.blog.content = result
-        _this.ownBlog = (this.blog.userId === _this.$store.getters.getUser.id)
+        _this.ownBlog = (blog.userId === _this.$store.getters.getUser.id)
 
       })
       _this.$axios.get("/comments?blogid=" + blogId ).then(res => {
         console.log(res)
         this.comments = res.data.data
       })
-    },
+
+    }
+    ,
     methods:{
       addcomment() {
-        this.succu=1
+        this.succu=2
         const _this = this
         const blogId = this.$route.params.blogId
-        //console.log('blogid:'+blogId)
+        console.log('blogid:'+blogId)
         this.CommentAddDto.blogId=blogId
         this.CommentAddDto.user=_this.$store.getters.getUser
         this.$axios.post("/commentadd", this.CommentAddDto).then(res => {
-          this.succu=2
+          this.succu=3
           this.CommentAddDto.yourcomment=''
-          //console.log(res)
+          console.log(res)
           _this.$axios.get("/comments?blogid=" + blogId).then(res => {
-            this.succu=0
-            //console.log(res)
+            console.log(res)
             this.comments = res.data.data
           })
         })
@@ -121,5 +129,18 @@
     min-height: 700px;
     padding: 20px 15px;
   }
-
+  .nickname{
+    margin-left: 10px;
+    position: relative;
+    bottom: 20px;
+  }
+  .card{
+    margin-bottom: 30px;
+  }
+  .user-img{
+    border-radius: 50%;
+  }
+  .favorite{
+    float: right;
+  }
 </style>

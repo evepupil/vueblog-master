@@ -4,6 +4,7 @@
     <router-view></router-view>
     <router-view  name="blogDetail"></router-view>
     <router-view  name="comment"></router-view>
+    <router-view  name="Search"></router-view>
   </div>
 </template>
 

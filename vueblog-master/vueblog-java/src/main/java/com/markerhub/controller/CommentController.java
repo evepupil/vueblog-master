@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.markerhub.common.dto.CommentAddDto;
 import com.markerhub.common.lang.Result;
+import com.markerhub.entity.Blog;
 import com.markerhub.entity.Comment;
 import com.markerhub.entity.User;
+import com.markerhub.mapper.BlogMapper;
 import com.markerhub.mapper.CommentMapper;
 import com.markerhub.service.CommentService;
 import com.markerhub.service.impl.CommentServiceImpl;
+import com.markerhub.util.DateTransfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +32,8 @@ import java.util.List;
  */
 @RestController
 public class CommentController {
-
+    @Autowired
+    BlogMapper blogMapper;
     @Autowired
     CommentMapper commentMapper;
 @GetMapping(value = "/comments")
@@ -51,8 +57,13 @@ public class CommentController {
     .setContent(commentAddDto.getYourcomment())
     .setBlogid(new Long(commentAddDto.getBlogId()))
     .setNickname(commenter.getNickname())
+    .setTime(LocalDateTime.now());
     ;
+    Blog blog=blogMapper.selectById(commentAddDto.getBlogId());
+    blog.setRecent(DateTransfer.date2LocalDateTime(new Date()));
+    blogMapper.updateById(blog);
     commentMapper.insert(newComment);
+
     return  Result.succ(newComment);
 }
 }

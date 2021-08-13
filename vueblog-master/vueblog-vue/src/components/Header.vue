@@ -3,25 +3,23 @@
 	  <div class="title"    >
       <ul class="top">
         <li  >
-          <span><el-link href="/blogs" >论坛广场</el-link></span>
+          <span><el-link href="/blogs" class="nav-title">论坛广场</el-link></span>
         </li>
         <li  >
-          <el-input v-model="search" maxlength="20" placeholder="请输入内容" ></el-input>
+          <el-input v-model="keywords" maxlength="20" placeholder="请输入内容" ></el-input>
         </li>
         <li  >
-          <el-button type="" icon="el-icon-search">搜索</el-button>
+          <el-button type=""  icon="el-icon-search" @click="Tosearch">搜索</el-button>
         </li>
         <li  >
           <div class="user" >
-            <el-avatar :size="50"  shape="square" :src="user.avatar"></el-avatar>
-            <p class="username">{{user.nickname}}</p>
+            <el-avatar :size="50"  shape="square" :src="user.avatar" class="user-img"></el-avatar>
+            <span class="username">{{user.nickname}}</span>
             <span class="p-intro" >{{user.sign}}</span>
           </div>
         </li>
       </ul>
-
 	  </div>
-
     <div class="maction">
       <span><el-link href="/blogs">主页</el-link></span>
       <el-divider direction="vertical"></el-divider>
@@ -37,33 +35,27 @@
 </template>
 
 <script>
+import router from "@/router/index.js";
   export default {
     name: "Header",
-	
+
     data() {
       return {
-		  search:'',
+		  keywords:'',
         user: {
 		      nickname:'请先登录',
 		      sign:'',
           username: '请先登录',
-          avatar: 'https://blog-1257029975.cos.ap-beijing.myqcloud.com/head/QQ%E5%9B%BE%E7%89%8720210530121836.jpg'
+          avatar: ''
         },
         hasLogin: false
       }
     },
     methods: {
-		// Tosearch(){
-		// 	const _this=this
-		// 	_this.$axios.get("/blog/search"),{
-		// 		headers:{
-		// 			"Authorization": localStorage.getItem("token")
-		// 		},
-		// 		}).then(res=>{
-					
-		// 		})
-		// 	},
-		
+		Tosearch(){
+			const _this=this
+			_this.$router.push({name: 'Search', query: {keywords: this.keywords}})
+			},
       logout() {
         const _this = this
         _this.$axios.get("/logout", {
@@ -91,6 +83,7 @@
   }
 </script>
 
+
 <style scoped>
 
 .top{
@@ -99,13 +92,38 @@
 li{
   float:left;
 }
-  .m-content {
-    max-width: 960px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .maction {
-    margin: 10px 0;
-  }
+.nav-title{
+  font-size: 20px;
+  margin-right: 50px;
+  margin-top: 10px;
+}
+.user{
+  width: 150px;
+  margin-left: 50px;
+  margin-right: 50px;
+  height: 70px;
+}
+.user .user-img{
+  float: left;
+}
+.username{
+  position: relative;
+  font-size: 18px;
+  display: inline-block;
+  margin-left: 15px;
+}
+.p-intro{
+  position: relative;
+  top: 25px;
+  right: 34px;
+  font-size: 14px;
+}
+.m-content {
+  width: 100%;
+  height: 70px;
+}
+.maction {
+  margin: 10px 0;
+}
 
 </style>

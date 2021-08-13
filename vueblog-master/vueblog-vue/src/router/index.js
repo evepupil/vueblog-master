@@ -5,9 +5,15 @@ import Blogs from '../views/Blogs.vue'
 import BlogEdit from '../views/BlogEdit.vue'
 import BlogDetail from '../views/BlogDetail.vue'
 import Comment from'../views/Comment.vue'
+import SearchResult from "@/views/SearchResult";
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/SearchResult/:keywords',
+    name:'Search',
+    component: SearchResult
+  },
   {
     path: '/',
     name: 'Index',
@@ -36,8 +42,7 @@ const routes = [
     path: '/blog/:blogId',
     name: 'BlogDetail',
     components: {
-      blogDetail: BlogDetail,
-      comment: Comment
+      blogDetail: BlogDetail
     }
   },
   {
