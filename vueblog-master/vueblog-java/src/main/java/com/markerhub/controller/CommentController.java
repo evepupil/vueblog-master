@@ -49,7 +49,7 @@ public class CommentController {
     public Result commentadd(@Validated @RequestBody CommentAddDto commentAddDto, HttpServletRequest httpServletRequest,
                              HttpServletResponse httpServletResponse){
     System.out.println(commentAddDto.getBlogId());
-
+    int blogAddComment=commentAddDto.getBlogId();
     Comment newComment=new Comment();
     User commenter=commentAddDto.getUser();
     newComment.setUserid(commenter.getId())
@@ -57,13 +57,14 @@ public class CommentController {
     .setContent(commentAddDto.getYourcomment())
     .setBlogid(new Long(commentAddDto.getBlogId()))
     .setNickname(commenter.getNickname())
-    .setTime(LocalDateTime.now());
+    .setTime(LocalDateTime.now())
     ;
     Blog blog=blogMapper.selectById(commentAddDto.getBlogId());
-    blog.setRecent(DateTransfer.date2LocalDateTime(new Date()));
+    int newCommentNums=commentMapper.selectCount(new QueryWrapper<Comment>().eq("blogid",blogAddComment));
+    blog.setRecent(DateTransfer.date2LocalDateTime(new Date()))
+    .setCommentnums(newCommentNums+1);
     blogMapper.updateById(blog);
     commentMapper.insert(newComment);
-
     return  Result.succ(newComment);
 }
 }

@@ -36,6 +36,7 @@
 
 <script>
 import router from "@/router/index.js";
+import SearchResult from "@/views/SearchResult";
   export default {
     name: "Header",
 
@@ -54,7 +55,9 @@ import router from "@/router/index.js";
     methods: {
 		Tosearch(){
 			const _this=this
-			_this.$router.push({name: 'Search', query: {keywords: this.keywords}})
+      _this.$router.push({name: 'Search', query: {keywords: this.keywords}})
+      if(_this.$parent==SearchResult)
+      _this.$parent.refresh()
 			},
       logout() {
         const _this = this

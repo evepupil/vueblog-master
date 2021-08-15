@@ -9,11 +9,15 @@
         <router-link :to="{name: 'BlogDetail', params: {blogId: blog.id}}">
           {{blog.title}}
         </router-link>
-        <p class="restore" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm"> 最近回复于 {{blog.recent}}</p>
+        <p class="restore"  value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm"> 最近回复于 {{blog.recent}}</p>
         <p>{{blog.description}}</p>
 
         <p class="time" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" >发布于{{blog.created}}</p>
         <div class="interactive">
+          <p class="favorite">
+            <span>回复</span>
+            {{blog.commentnums}}
+          </p>
           <p class="favorite">
             <span>收藏</span>
             {{blog.favorite}}

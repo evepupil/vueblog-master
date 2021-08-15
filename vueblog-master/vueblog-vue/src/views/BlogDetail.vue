@@ -55,7 +55,6 @@
   import Header from "../components/Header";
   export default {
     name: "BlogDetail.vue",
-
     components: {Header},
     data() {
       return {
@@ -104,7 +103,6 @@
           //console.log(res)
           _this.$axios.get("/comments?blogid=" + blogId).then(res => {
             this.succu=0
-
             //console.log(res)
             this.comments = res.data.data
           })
