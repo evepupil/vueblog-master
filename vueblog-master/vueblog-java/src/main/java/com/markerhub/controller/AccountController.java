@@ -85,23 +85,22 @@ public class AccountController {
             return Result.fail("用户已存在");
         }
         User newuser=new User();
-        String jwt = jwtUtils.generateToken(user.getId());
-
-        user.setLastLogin(DateTransfer.date2LocalDateTime(new Date()));
-        user.setIp(request.getRemoteAddr());
-        userMapper.updateById(user);
+        newuser.setLastLogin(DateTransfer.date2LocalDateTime(new Date()));
+        newuser.setIp(request.getRemoteAddr())
+        .setUsername(loginDto.getUsername())
+        .setCreated(new Date())
+        .setPassword(SecureUtil.md5(loginDto.getPassword()))
+        .setStatus(0)
+        .setLevel(0)
+        ;
+        userMapper.insert(newuser);
+        newuser =userMapper.selectOne(new QueryWrapper<User>().eq("username", loginDto.getUsername()));
+        String jwt = jwtUtils.generateToken(newuser.getId());
+        newuser.setNickname("用户"+newuser.getId());
+        userMapper.updateById(newuser);
         response.setHeader("Authorization", jwt);
         response.setHeader("Access-control-Expose-Headers", "Authorization");
-
-        return Result.succ(MapUtil.builder()
-                .put("id", user.getId())
-                .put("username", user.getUsername())
-                .put("avatar", user.getAvatar())
-                .put("email", user.getEmail())
-                .put("sign",user.getSign())
-                .put("nickname",user.getNickname())
-                .map()
-        );
+        return Result.succ(user);
     }
 
 }

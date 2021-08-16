@@ -54,6 +54,7 @@ public class Blog implements Serializable {
     private String author;
     @TableField(value = "user_id")
     private Long userId;
+    private Long browse;
 
 
 

@@ -25,16 +25,18 @@
 
       <div class="user">
         <el-avatar :size="50" shape="square" :src="comment.avatar"></el-avatar>
-        <p class="nickname">{{ comment.nickname }}
-        </p>
+        <span class="nickname">{{ comment.nickname }}
+        </span>
 
-        <span class="p-intro">さあ、始めようか</span>
       </div>
       <el-card>
         <div >
           <p v-text="comment.content"></p>
           <p>{{comment.time}}</p>
-          <p>{{comment.favorite}}</p>
+          <p class="favorite">
+            <span>点赞</span>
+            {{comment.favorite}}
+          </p>
           <div>
           </div>
         </div>
@@ -120,5 +122,18 @@
     min-height: 700px;
     padding: 20px 15px;
   }
-
+  .nickname{
+    margin-left: 10px;
+    position: relative;
+    bottom: 20px;
+  }
+  .card{
+    margin-bottom: 30px;
+  }
+  .user-img{
+    border-radius: 50%;
+  }
+  .favorite{
+    float: right;
+  }
 </style>

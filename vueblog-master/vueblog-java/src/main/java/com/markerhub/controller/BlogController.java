@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.markerhub.common.lang.Result;
 import com.markerhub.entity.Blog;
+import com.markerhub.entity.Browse;
 import com.markerhub.entity.User;
 import com.markerhub.mapper.BlogMapper;
+import com.markerhub.mapper.BrowseMapper;
 import com.markerhub.mapper.UserMapper;
 import com.markerhub.service.BlogService;
 import com.markerhub.util.ShiroUtil;
@@ -18,8 +20,12 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -39,6 +45,8 @@ public class BlogController {
     BlogService blogService;
     @Autowired
     BlogMapper blogMapper;
+    @Autowired
+    BrowseMapper browseMapper;
     @GetMapping("/blogs")
     public Result list(@RequestParam(defaultValue = "1") Integer currentPage) {
         Page page = new Page(currentPage, 5);
@@ -47,10 +55,35 @@ public class BlogController {
     }
 
     @GetMapping("/blog/{id}")
-    public Result detail(@PathVariable(name = "id") Long id) {
-        Blog blog = blogService.getById(id);
-        Assert.notNull(blog, "该博客不存在或已被删除");
+    public Result detail(@PathVariable(name = "id") Long id , HttpServletRequest request) {
+        String ip=request.getRemoteAddr();
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+        QueryWrapper<Browse> browseQueryWrapper=new QueryWrapper<>();
+        browseQueryWrapper.select("blogid")
+                .eq("date_format(time, '%Y-%m-%d')",ft.format(new Date())+"")
+                .eq("ip",ip);
 
+       List<Object> res= browseMapper.selectObjs(browseQueryWrapper);
+       System.out.println(res);
+        Blog blog = blogService.getById(id);
+        boolean flag=false;
+       for(Object a:res){
+           if(id.longValue()==(((Integer) a).longValue())){
+               flag=true;
+               break;
+           }
+       }
+       if(!flag){
+           blog.setBrowse(blog.getBrowse()+1);
+           Browse browse=new Browse();
+           browse.setIp(ip)
+                   .setBlogid(id)
+                   .setTime(LocalDateTime.now());
+           browseMapper.insert(browse);
+       }
+
+        Assert.notNull(blog, "该博客不存在或已被删除");
+        blogMapper.updateById(blog);
         return Result.succ(blog);
     }
 //    @PostMapping("/blog/star")
@@ -68,7 +101,7 @@ public class BlogController {
     public Result edit(@Validated @RequestBody Blog blog) {
 
 //        Assert.isTrue(false, "公开版不能任意编辑！");
-
+        User user=userMapper.selectById(ShiroUtil.getProfile().getId());
         Blog temp = null;
         if(blog.getId() != null) {
             temp = blogService.getById(blog.getId());
@@ -77,17 +110,18 @@ public class BlogController {
             Assert.isTrue(temp.getUserId().longValue() == ShiroUtil.getProfile().getId().longValue(), "没有权限编辑");
         } else {
             temp = new Blog();
-            User user=userMapper.selectById(ShiroUtil.getProfile().getId());
+
             temp.setUserId(ShiroUtil.getProfile().getId());
             temp.setCreated(LocalDateTime.now());
             temp.setStatus(0);
-            temp.setAuthor(user.getNickname());
+
 
 
         }
 
         BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status");
         temp.setRecent(LocalDateTime.now());
+        temp.setAuthor(user.getNickname());
         blogService.saveOrUpdate(temp);
 
         return Result.succ(null);

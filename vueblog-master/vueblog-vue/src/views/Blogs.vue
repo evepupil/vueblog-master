@@ -14,6 +14,10 @@
 
         <p class="time" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" >发布于{{blog.created}}</p>
         <div class="interactive">
+          <p class="browse">
+            <span>浏览</span>
+            {{blog.browse}}
+          </p>
           <p class="favorite">
             <span>回复</span>
             {{blog.commentnums}}

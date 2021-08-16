@@ -6,11 +6,17 @@ import BlogEdit from '../views/BlogEdit.vue'
 import BlogDetail from '../views/BlogDetail.vue'
 import Comment from'../views/Comment.vue'
 import SearchResult from "@/views/SearchResult";
+import Register from "@/views/Register";
 Vue.use(VueRouter)
-
+mode:'hash'
 const routes = [
   {
-    path: '/SearchResult/:keywords',
+    path: '/register',
+    name:'Register',
+    component: Register
+  },
+  {
+    path: '/searchResult/:keywords',
     name:'Search',
     component: SearchResult
   },
