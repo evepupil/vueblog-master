@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header></Header>
-
+    <p>{{blog.author}}</p>
     <div class="mblog">
       <h2> {{ blog.title }}</h2>
       <el-link icon="el-icon-edit" v-if="ownBlog">
@@ -14,6 +14,7 @@
     </div>
     <el-button type="info" icon="el-icon-check" circle></el-button>
     <el-button type="succss" icon="el-icon-star-off" circle></el-button>
+
 
     <h4>---------------------</h4>
 

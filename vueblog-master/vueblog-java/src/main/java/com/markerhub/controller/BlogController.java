@@ -64,7 +64,7 @@ public class BlogController {
                 .eq("ip",ip);
 
        List<Object> res= browseMapper.selectObjs(browseQueryWrapper);
-       System.out.println(res);
+       //System.out.println(res);
         Blog blog = blogService.getById(id);
         boolean flag=false;
        for(Object a:res){
@@ -102,6 +102,7 @@ public class BlogController {
 
 //        Assert.isTrue(false, "公开版不能任意编辑！");
         User user=userMapper.selectById(ShiroUtil.getProfile().getId());
+        Assert.notNull(user,"请先登录");
         Blog temp = null;
         if(blog.getId() != null) {
             temp = blogService.getById(blog.getId());
@@ -114,9 +115,6 @@ public class BlogController {
             temp.setUserId(ShiroUtil.getProfile().getId());
             temp.setCreated(LocalDateTime.now());
             temp.setStatus(0);
-
-
-
         }
 
         BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status");

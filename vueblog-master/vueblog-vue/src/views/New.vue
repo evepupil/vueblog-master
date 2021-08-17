@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "UserCenter",
+  name: "New",
   data(){
     return{
 
