@@ -7,7 +7,9 @@ import com.markerhub.entity.Comment;
 import com.markerhub.mapper.BlogMapper;
 import com.markerhub.mapper.CommentMapper;
 import com.markerhub.mapper.UserMapper;
+import com.markerhub.service.impl.OtherServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +26,8 @@ import java.util.*;
  */
 @RestController
 public class OtherController {
+    @Autowired
+    OtherServiceImpl otherService;
     @Autowired
     BlogMapper blogMapper;
     @Autowired
@@ -44,14 +48,11 @@ public class OtherController {
                 .eq("date_format(time, '%Y-%m-%d')",ft.format(new Date())+"")
                 .groupBy("blogid")
                 .orderByDesc("time");
-
-
         return  Result.succ(commentHot);
-
     }
-//    @RequestMapping(value="/recentcomment")
-//    public Result recentcomment(){
-//
-//    }
+    @RequestMapping("/recentComment")
+    public Result recentComment(){
+        return otherService.recentComment();
+    }
 
 }

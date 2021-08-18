@@ -2,6 +2,8 @@ package com.markerhub.service;
 import com.markerhub.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.ArrayList;
+
 /**
  * @ClassName : CommentService
  * @Author : Administrator
@@ -9,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @Description :
  */
 public interface CommentService extends IService<Comment> {
+    ArrayList<Comment> getReplay(Long id);
 }

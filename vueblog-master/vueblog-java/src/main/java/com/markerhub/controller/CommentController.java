@@ -36,35 +36,37 @@ public class CommentController {
     BlogMapper blogMapper;
     @Autowired
     CommentMapper commentMapper;
-@GetMapping(value = "/comments")
-    public Result commentList(@RequestParam Long blogid){
-     QueryWrapper<Comment> queryWrapper=new QueryWrapper<>();
-     queryWrapper.eq("blogid",blogid);
-     queryWrapper.orderByDesc("time");
-    ArrayList<Comment> list= (ArrayList<Comment>) commentMapper.
-            selectList(queryWrapper);
-    return  Result.succ(list);
-}
-@PostMapping(value = "commentadd")
+
+    @GetMapping(value = "/comments")
+    public Result commentList(@RequestParam Long blogid) {
+        QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("blogid", blogid);
+        queryWrapper.orderByDesc("time");
+        ArrayList<Comment> list = (ArrayList<Comment>) commentMapper.
+                selectList(queryWrapper);
+        return Result.succ(list);
+    }
+
+    @PostMapping(value = "commentadd")
     public Result commentadd(@Validated @RequestBody CommentAddDto commentAddDto, HttpServletRequest httpServletRequest,
-                             HttpServletResponse httpServletResponse){
-    System.out.println(commentAddDto.getBlogId());
-    int blogAddComment=commentAddDto.getBlogId();
-    Comment newComment=new Comment();
-    User commenter=commentAddDto.getUser();
-    newComment.setUserid(commenter.getId())
-            .setAvatar(commenter.getAvatar())
-    .setContent(commentAddDto.getYourcomment())
-    .setBlogid(new Long(commentAddDto.getBlogId()))
-    .setNickname(commenter.getNickname())
-    .setTime(LocalDateTime.now())
-    ;
-    Blog blog=blogMapper.selectById(commentAddDto.getBlogId());
-    int newCommentNums=commentMapper.selectCount(new QueryWrapper<Comment>().eq("blogid",blogAddComment));
-    blog.setRecent(DateTransfer.date2LocalDateTime(new Date()))
-    .setCommentnums(newCommentNums+1);
-    blogMapper.updateById(blog);
-    commentMapper.insert(newComment);
-    return  Result.succ(newComment);
-}
+                             HttpServletResponse httpServletResponse) {
+        System.out.println(commentAddDto.getBlogId());
+        int blogAddComment = commentAddDto.getBlogId();
+        Comment newComment = new Comment();
+        User commenter = commentAddDto.getUser();
+        newComment.setUserid(commenter.getId())
+                .setAvatar(commenter.getAvatar())
+                .setContent(commentAddDto.getYourcomment())
+                .setBlogid(new Long(commentAddDto.getBlogId()))
+                .setNickname(commenter.getNickname())
+                .setTime(LocalDateTime.now())
+        ;
+        Blog blog = blogMapper.selectById(commentAddDto.getBlogId());
+        int newCommentNums = commentMapper.selectCount(new QueryWrapper<Comment>().eq("blogid", blogAddComment));
+        blog.setRecent(DateTransfer.date2LocalDateTime(new Date()))
+                .setCommentnums(newCommentNums + 1);
+        blogMapper.updateById(blog);
+        commentMapper.insert(newComment);
+        return Result.succ(newComment);
+    }
 }

@@ -66,6 +66,7 @@ public class BlogController {
        List<Object> res= browseMapper.selectObjs(browseQueryWrapper);
        //System.out.println(res);
         Blog blog = blogService.getById(id);
+        Assert.notNull(blog, "该博客不存在或已被删除");
         boolean flag=false;
        for(Object a:res){
            if(id.longValue()==(((Integer) a).longValue())){
@@ -82,7 +83,7 @@ public class BlogController {
            browseMapper.insert(browse);
        }
 
-        Assert.notNull(blog, "该博客不存在或已被删除");
+
         blogMapper.updateById(blog);
         return Result.succ(blog);
     }
@@ -99,7 +100,6 @@ public class BlogController {
     @RequiresAuthentication
     @PostMapping("/blog/edit")
     public Result edit(@Validated @RequestBody Blog blog) {
-
 //        Assert.isTrue(false, "公开版不能任意编辑！");
         User user=userMapper.selectById(ShiroUtil.getProfile().getId());
         Assert.notNull(user,"请先登录");
@@ -115,9 +115,10 @@ public class BlogController {
             temp.setUserId(ShiroUtil.getProfile().getId());
             temp.setCreated(LocalDateTime.now());
             temp.setStatus(0);
+            temp.setPlate(blog.getPlate());
         }
 
-        BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status");
+        BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status","plate");
         temp.setRecent(LocalDateTime.now());
         temp.setAuthor(user.getNickname());
         blogService.saveOrUpdate(temp);

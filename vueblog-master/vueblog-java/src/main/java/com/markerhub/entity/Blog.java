@@ -19,7 +19,7 @@ import java.util.Date;
  * 
  * </p>
  *
- * @author 关注公众号：MarkerHub
+ * @author
  * @since 2020-05-25
  */
 @Data
@@ -52,9 +52,10 @@ public class Blog implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     private String author;
-    @TableField(value = "user_id")
+    @TableField(value = "userid")
     private Long userId;
     private Long browse;
+    private String plate;
 
 
 
