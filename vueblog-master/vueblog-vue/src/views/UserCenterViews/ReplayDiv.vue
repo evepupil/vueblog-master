@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="post" v-if="comment">
+        <div class="post" v-if="blogs[index]">
             <div class="my-post">
                 <div class="uesr">
                     <div class="user-img">

@@ -1,9 +1,8 @@
 <template>
     <div>
       <UserCenterCom :isOwn="isOwn" :userid="userid" :userinfo="userinfo"></UserCenterCom>
-        <ReplyDiv></ReplyDiv>
-      <div v-for="(comment,index) in comments"  >
-        <ReplyDiv :comment="comment" :index="index" :blogs="blogs"></ReplyDiv>
+      <div  v-for="(comment,index) in comments" v-if="comments" >
+        <ReplyDiv  :comment="comment" :index="index" :blogs="blogs"></ReplyDiv>
       </div>
     </div>
 </template>
@@ -18,6 +17,7 @@ export default {
     name:'Like',
   data() {
     return {
+      loading:false,
       isOwn:false,
       userid:null,
       userinfo:null,
@@ -28,6 +28,7 @@ export default {
     methods: {
     refresh() {
       const _this = this
+      _this.loading=true
       const userid = this.$route.params.userid
       _this.userid = userid
       const visitor = _this.$store.getters.getVisit
@@ -47,6 +48,7 @@ export default {
       _this.$axios.get('/usercenter?id='+userid).then(res=> {
         _this.userinfo = res.data.data
       })
+      _this.loading=false
     },
   },
   created() {
