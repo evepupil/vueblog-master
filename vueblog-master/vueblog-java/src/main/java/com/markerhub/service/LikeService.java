@@ -3,6 +3,8 @@ package com.markerhub.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.markerhub.entity.Like;
 
+import java.util.ArrayList;
+
 /**
  * @ClassName : LikeService
  * @Author : Administrator
@@ -11,4 +13,5 @@ import com.markerhub.entity.Like;
  */
 public interface LikeService {
     int likeBlog(Long blogid,Long userid);
+    ArrayList<Like> likeMe(Long userid);
 }

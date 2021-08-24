@@ -60,6 +60,6 @@ public class User implements Serializable {
 
     private String nickname;
     private Integer level;
-
+    private Integer exp;
 
 }

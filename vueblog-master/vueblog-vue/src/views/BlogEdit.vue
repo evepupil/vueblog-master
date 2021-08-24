@@ -14,7 +14,17 @@
         </el-form-item>
 
         <el-form-item label="内容" prop="content">
-          <mavon-editor v-model="ruleForm.content"></mavon-editor>
+          <mavon-editor
+              :toolbars="toolbars"
+          @imgAdd="handleEditorImgAdd"
+          @imgDel="handleEditorImgDel"
+          style="height:600px"
+          v-model="ruleForm.content"
+          @change="change"
+          ref=md
+          ></mavon-editor>
+<!--          <mavon-editor v-model="ruleForm.content">-->
+
         </el-form-item>
 
         <el-form-item>
@@ -55,6 +65,25 @@
       };
     },
     methods: {
+      handleEditorImgAdd(pos , $file){
+        const blogId = this.$route.params.blogId
+        var formdata = new FormData();
+        formdata.append('file' , $file);
+        formdata.append('blogid',blogId)
+        console.log(blogId)
+        this.$axios
+            .post("/upload/articleimg", formdata)
+            .then(res => {
+              var url = res.data.data;
+              url=encodeURI(url)
+              console.log(url)
+              this.$refs.md.$img2Url(pos, url);
+              //这里就是引用ref = md 然后调用$img2Url方法即可替换地址
+            });
+      },
+      handleEditorImgDel(){
+        console.log('handleEditorImgDel');    //我这里没做什么操作，后续我要写上接口，从七牛云CDN删除相应的图片
+      },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {

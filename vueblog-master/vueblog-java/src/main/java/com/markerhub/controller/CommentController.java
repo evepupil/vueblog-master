@@ -48,7 +48,8 @@ public class CommentController {
     }
 
     @PostMapping(value = "commentadd")
-    public Result commentadd(@Validated @RequestBody CommentAddDto commentAddDto, HttpServletRequest httpServletRequest,
+    public Result commentadd(@Validated @RequestBody CommentAddDto commentAddDto,
+                             HttpServletRequest httpServletRequest,
                              HttpServletResponse httpServletResponse) {
         System.out.println(commentAddDto.getBlogId());
         int blogAddComment = commentAddDto.getBlogId();

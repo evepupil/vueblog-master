@@ -7,4 +7,5 @@ package com.markerhub.service;
  * @Description :
  */
 public interface StarService {
+    int starBlog(Long blogid,Long userid);
 }

@@ -4,9 +4,15 @@ import Login from '../views/Login.vue'
 import Blogs from '../views/Blogs.vue'
 import BlogEdit from '../views/BlogEdit.vue'
 import BlogDetail from '../views/BlogDetail.vue'
-import Comment from'../views/Comment.vue'
 import SearchResult from "@/views/SearchResult";
 import Register from "@/views/Register";
+import BlogAdd from "@/views/BlogAdd";
+import UserCenter from "@/views/UserCenterViews/UserCenter";
+import MyPost from "@/views/UserCenterViews/MyPost";
+import Collect from "@/views/UserCenterViews/Collect"
+import Like from "@/views/UserCenterViews/Like"
+import Reply from "@/views/UserCenterViews/Reply"
+
 Vue.use(VueRouter)
 mode:'hash'
 const routes = [
@@ -36,10 +42,18 @@ const routes = [
     name: 'Login',
     component: Login
   },
+  // {
+  //   path: '/blog/edit',
+  //   name: 'BlogEdit',
+  //   component: BlogEdit,
+  //   meta: {
+  //     requireAuth: true
+  //   }
+  // },
   {
     path: '/blog/add',
     name: 'BlogAdd',
-    component: BlogEdit,
+    component: BlogAdd,
     meta: {
       requireAuth: true
     }
@@ -58,6 +72,30 @@ const routes = [
     meta: {
       requireAuth: true
     }
+  },
+  {
+    path:'/UserCenter/:userid',
+    name:'UserCenter',
+    component: UserCenter,
+    //props:true
+  },
+  {
+    path:'/MyPost/:userid',
+    name:'MyPost',
+    component:MyPost,
+  },
+  {
+    path:'/Collect/:userid',
+    name:'Collect',
+    component:Collect
+  },
+  {
+    path:'/Like/:userid',
+    component:Like
+  },
+  {
+    path:'/Reply/:userid',
+    component:Reply
   }
 ]
 

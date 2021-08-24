@@ -5,6 +5,8 @@
     <router-view  name="blogDetail"></router-view>
     <router-view  name="comment"></router-view>
     <router-view  name="Search"></router-view>
+    <router-view name="MyPost"></router-view>
+    <router-view name="UserCenter"></router-view>
   </div>
 </template>
 

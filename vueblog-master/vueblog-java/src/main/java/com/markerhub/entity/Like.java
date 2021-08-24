@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("like")
+@TableName("p_like")
 public class Like {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -28,6 +28,7 @@ public class Like {
     private Long everycommentid;
     private LocalDateTime time;
     private int state;
+    private Long belikeduserid;
 
 
 }

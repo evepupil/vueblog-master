@@ -6,9 +6,19 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: '',
-    userInfo: JSON.parse(sessionStorage.getItem("userInfo"))
+    userInfo: JSON.parse(sessionStorage.getItem("userInfo")),
+    visitUser:null,
+    isOwn:false,
   },
   mutations: {
+    SET_ISOWN:(state,isOwn)=>{
+      state.isOwn
+      sessionStorage.setItem("isOwn",isOwn)
+    },
+    SET_VISIT:(state,visitUser)=>{
+      state.visitUser=visitUser
+      sessionStorage.setItem("visitUser",visitUser)
+    },
     // set
     SET_TOKEN: (state, token) => {
       state.token = token
@@ -30,7 +40,13 @@ export default new Vuex.Store({
     // get
     getUser: state => {
       return state.userInfo
-    }
+    },
+    getVisit:state => {
+      return state.visitUser
+    },
+    getIsOwn:state => {
+      return this.state.isOwn
+    },
 
   },
   actions: {

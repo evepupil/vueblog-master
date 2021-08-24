@@ -13,6 +13,7 @@ import com.markerhub.mapper.BlogMapper;
 import com.markerhub.mapper.BrowseMapper;
 import com.markerhub.mapper.UserMapper;
 import com.markerhub.service.BlogService;
+import com.markerhub.util.RedisUtil;
 import com.markerhub.util.ShiroUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ import java.util.function.Consumer;
  */
 @RestController
 public class BlogController {
+    @Autowired
+    RedisUtil redisUtil;
     @Autowired
     UserMapper userMapper;
     @Autowired
@@ -108,7 +111,8 @@ public class BlogController {
             temp = blogService.getById(blog.getId());
             // 只能编辑自己的文章
 
-            Assert.isTrue(temp.getUserId().longValue() == ShiroUtil.getProfile().getId().longValue(), "没有权限编辑");
+            Assert.isTrue(temp.getUserId().longValue()
+                    == ShiroUtil.getProfile().getId().longValue(), "没有权限编辑");
         } else {
             temp = new Blog();
 
@@ -122,9 +126,39 @@ public class BlogController {
         temp.setRecent(LocalDateTime.now());
         temp.setAuthor(user.getNickname());
         blogService.saveOrUpdate(temp);
-
         return Result.succ(null);
     }
+    @RequiresAuthentication
+    @PostMapping("/blog/add")
+    public Result blogAdd(@Validated @RequestBody Blog blog) {
+//        Assert.isTrue(false, "公开版不能任意编辑！");
+        User user=userMapper.selectById(ShiroUtil.getProfile().getId());
+        Assert.notNull(user,"请先登录");
+        Blog temp = null;
+        if(blog.getId() != null) {
+            temp = blogService.getById(blog.getId());
+            // 只能编辑自己的文章
+
+            Assert.isTrue(temp.getUserId().longValue()
+                    == ShiroUtil.getProfile().getId().longValue(), "没有权限编辑");
+        } else {
+            temp = new Blog();
+            temp.setUserId(ShiroUtil.getProfile().getId());
+            temp.setCreated(LocalDateTime.now());
+            temp.setStatus(0);
+            temp.setPlate(blog.getPlate());
+        }
+
+        BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status","plate");
+        temp.setRecent(LocalDateTime.now());
+        temp.setAuthor(user.getNickname());
+        blogService.saveOrUpdate(temp);
+        Integer maxblogid= (Integer) redisUtil.get("blogIdMax");
+        maxblogid+=1;
+        redisUtil.set("blogIdMax",maxblogid);
+        return Result.succ(null);
+    }
+
     @GetMapping(value = "/blog/search")
     public  Result searchBlog(@RequestParam String keywords){
         System.out.println(keywords);

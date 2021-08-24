@@ -13,4 +13,5 @@ import java.util.ArrayList;
  */
 public interface OtherService {
     Result recentComment();
+    Long getMaxBlogId();
 }

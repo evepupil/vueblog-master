@@ -6,12 +6,14 @@ import com.markerhub.entity.Comment;
 import com.markerhub.entity.Like;
 import com.markerhub.mapper.CommentMapper;
 import com.markerhub.mapper.LikeMapper;
+import com.markerhub.service.BlogService;
 import com.markerhub.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * @ClassName : LikeServiceImpl
@@ -23,6 +25,8 @@ import java.time.LocalDateTime;
 public class LikeServiceImpl  implements LikeService {
     @Autowired
     LikeMapper likeMapper;
+    @Autowired
+    BlogService blogService;
     @Override
     public int likeBlog(Long blogid, Long userid){
         QueryWrapper<Like> queryWrapper=new QueryWrapper<>();
@@ -34,6 +38,16 @@ public class LikeServiceImpl  implements LikeService {
         }
         return likeMapper.insert(new Like().setBlogid(blogid)
         .setUserid(userid)
-        .setTime(LocalDateTime.now()));
-    };
+        .setTime(LocalDateTime.now())
+                .setBelikeduserid(blogService.getById(blogid).getUserId()));
+    }
+
+    @Override
+    public ArrayList<Like> likeMe(Long userid) {
+        QueryWrapper<Like> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("belikeduserid",userid).orderByDesc("time");
+        return (ArrayList<Like>) likeMapper.selectList(queryWrapper);
+    }
+
+    ;
 }

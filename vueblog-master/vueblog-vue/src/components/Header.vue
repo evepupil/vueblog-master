@@ -24,7 +24,8 @@
       <span><el-link href="/blogs">主页</el-link></span>
       <el-divider direction="vertical"></el-divider>
       <span><el-link type="success" href="/blog/add">发表博客</el-link></span>
-
+      <el-divider direction="vertical"></el-divider>
+      <span><el-link type="warning" @click="toUserCenter" v-show="hasLogin">个人中心</el-link></span>
       <el-divider direction="vertical"></el-divider>
       <span v-show="!hasLogin"><el-link type="primary" href="/login">登录</el-link></span>
 
@@ -44,6 +45,7 @@ import SearchResult from "@/views/SearchResult";
       return {
 		  keywords:'',
         user: {
+		      userid:null,
 		      nickname:'请先登录',
 		      sign:'',
           username: '请先登录',
@@ -53,6 +55,13 @@ import SearchResult from "@/views/SearchResult";
       }
     },
     methods: {
+      toUserCenter(){
+        const  _this=this
+        this.user.userid = this.$store.getters.getUser.id
+        _this.$router.push({name: 'UserCenter' , params: {userid:this.user.userid}})
+        _this.$store.commit("SET_VISIT",this.user.userid)
+
+      },
 		Tosearch(){
 			const _this=this
       _this.$router.push({name: 'Search', query: {keywords: this.keywords}})
@@ -78,7 +87,6 @@ import SearchResult from "@/views/SearchResult";
         this.user.nickname = this.$store.getters.getUser.nickname
         this.user.avatar = this.$store.getters.getUser.avatar
         this.user.sign = this.$store.getters.getUser.sign
-
         this.hasLogin = true
       }
 
@@ -120,6 +128,7 @@ li{
   top: 25px;
   right: 34px;
   font-size: 14px;
+  display: inline-block;
 }
 .m-content {
   width: 100%;

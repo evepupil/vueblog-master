@@ -39,10 +39,18 @@ public class OtherServiceImpl implements OtherService {
         for(Comment comment:comments1){
             blogs.add(blogMapper.selectById(comment.getBlogid()));
         }
+
         return Result.succ(MapUtil.builder()
                 .put("comments",comments1)
                 .put("blogs",blogs)
                 .map())
                 ;
+    }
+
+    @Override
+    public Long getMaxBlogId() {
+        QueryWrapper<Blog > queryWrapper=new QueryWrapper<>();
+        ArrayList<Blog> res= (ArrayList<Blog>) blogMapper.selectList(queryWrapper.orderByDesc("id"));
+        return res.get(0).getId();
     }
 }
