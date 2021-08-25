@@ -28,7 +28,8 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+          <el-button type="primary" :loading="loading"  @click="submitForm('ruleForm')"
+                    >立即创建</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -44,7 +45,9 @@ export default {
   components: {Header},
   data() {
     return {
+      loading:false,
       ruleForm: {
+
         id: '',
         title: '',
         description: '',
@@ -82,6 +85,7 @@ export default {
       console.log('handleEditorImgDel');    //我这里没做什么操作，后续我要写上接口，从七牛云CDN删除相应的图片
     },
     submitForm(formName) {
+      this.loading=true
       this.$refs[formName].validate((valid) => {
         if (valid) {
 
@@ -106,6 +110,8 @@ export default {
           return false;
         }
       });
+      this.loading=false
+      this.resetForm(formName)
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();

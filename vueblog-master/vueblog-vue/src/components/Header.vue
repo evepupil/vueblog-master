@@ -1,6 +1,6 @@
 <template>
   <div class="m-content">
-	  <div class="title"    >
+    <div class="title"    >
       <ul class="top">
         <li  >
           <span><el-link href="/blogs" class="nav-title">论坛广场</el-link></span>
@@ -14,18 +14,21 @@
         <li  >
           <div class="user" >
             <el-avatar :size="50"  shape="square" :src="user.avatar" class="user-img"></el-avatar>
-            <span class="username">{{user.nickname}}</span>
-            <span class="p-intro" >{{user.sign}}</span>
+            <p class="username">{{user.nickname}}</p>
+            <p class="p-intro" >{{user.sign}}</p>
           </div>
         </li>
       </ul>
-	  </div>
+    </div>
     <div class="maction">
       <span><el-link href="/blogs">主页</el-link></span>
       <el-divider direction="vertical"></el-divider>
       <span><el-link type="success" href="/blog/add">发表博客</el-link></span>
-      <el-divider direction="vertical"></el-divider>
-      <span><el-link type="warning" @click="toUserCenter" v-show="hasLogin">个人中心</el-link></span>
+
+      <span v-show="hasLogin">
+        <el-divider direction="vertical" ></el-divider>
+        <el-link type="warning" @click="toUserCenter" >个人中心</el-link>
+      </span>
       <el-divider direction="vertical"></el-divider>
       <span v-show="!hasLogin"><el-link type="primary" href="/login">登录</el-link></span>
 
@@ -38,50 +41,52 @@
 <script>
 import router from "@/router/index.js";
 import SearchResult from "@/views/SearchResult";
-  export default {
-    name: "Header",
+export default {
+  name: "Header",
 
-    data() {
-      return {
-		  keywords:'',
-        user: {
-		      userid:null,
-		      nickname:'请先登录',
-		      sign:'',
-          username: '请先登录',
-          avatar: ''
-        },
-        hasLogin: false
-      }
-    },
-    methods: {
-      toUserCenter(){
-        const  _this=this
-        this.user.userid = this.$store.getters.getUser.id
-        _this.$router.push({name: 'UserCenter' , params: {userid:this.user.userid}})
-        _this.$store.commit("SET_VISIT",this.user.userid)
-
+  data() {
+    return {
+      keywords:'',
+      user: {
+        userid:null,
+        nickname:'请先登录',
+        sign:'',
+        username: '请先登录',
+        avatar: ''
       },
-		Tosearch(){
-			const _this=this
+      hasLogin: false
+    }
+  },
+  methods: {
+    toUserCenter(){
+      const  _this=this
+      this.user.userid = this.$store.getters.getUser.id
+      _this.$router.push({name: 'UserCenter' , params: {userid:this.user.userid}})
+      _this.$store.commit("SET_VISIT",this.user.userid)
+
+    },
+    Tosearch(){
+      const _this=this
       _this.$router.push({name: 'Search', query: {keywords: this.keywords}})
       if(_this.$parent==SearchResult)
-      _this.$parent.refresh()
-			},
-      logout() {
-        const _this = this
-        _this.$axios.get("/logout", {
-          headers: {
-            "Authorization": localStorage.getItem("token")
-          }
-        }).then(res => {
-          _this.$store.commit("REMOVE_INFO")
-          _this.$router.push("/login")
-
-        })
-      }
+        _this.$parent.refresh()
     },
-    created() {
+    logout() {
+      const _this = this
+      _this.$axios.get("/logout", {
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res => {
+        _this.$store.commit("REMOVE_INFO")
+        _this.$router.push("/login")
+
+      })
+    },
+    refresh(){
+      this.$axios.get('/usercenter?id='+this.$store.getters.getUser.id).then(res=> {
+        this.$store.commit("SET_USERINFO", res.data.data)
+      })
       if(this.$store.getters.getUser.username) {
         this.user.username = this.$store.getters.getUser.username
         this.user.nickname = this.$store.getters.getUser.nickname
@@ -89,14 +94,24 @@ import SearchResult from "@/views/SearchResult";
         this.user.sign = this.$store.getters.getUser.sign
         this.hasLogin = true
       }
-
     }
+  },
+
+  created() {
+    this.refresh()
   }
+}
 </script>
 
 
 <style scoped>
-
+*{
+  margin: 0;
+  padding: 0;
+}
+.m-content{
+  margin-bottom: 25px;
+}
 .top{
   list-style-type:none
 }
@@ -109,26 +124,29 @@ li{
   margin-top: 10px;
 }
 .user{
-  width: 150px;
+  width: 200px;
   margin-left: 50px;
   margin-right: 50px;
-  height: 70px;
+  height: 50px;
 }
 .user .user-img{
   float: left;
+  margin-right: 10px;
+
 }
 .username{
-  position: relative;
-  font-size: 18px;
-  display: inline-block;
-  margin-left: 15px;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 .p-intro{
-  position: relative;
-  top: 25px;
-  right: 34px;
   font-size: 14px;
-  display: inline-block;
+  text-overflow:ellipsis;
+  -webkit-line-clamp:1;
+  display: -webkit-box;
+  -webkit-box-orient:block-axis;
+  white-space:overflow;
+  overflow:hidden;
+
 }
 .m-content {
   width: 100%;

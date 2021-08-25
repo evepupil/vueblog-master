@@ -27,7 +27,7 @@ public class Result implements Serializable {
     }
 
     public static Result fail(String msg) {
-        return fail(400, msg, null);
+        return fail(400, "操作失败", msg);
     }
 
     public static Result fail(String msg, Object data) {

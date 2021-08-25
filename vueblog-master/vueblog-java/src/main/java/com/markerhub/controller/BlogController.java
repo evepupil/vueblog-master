@@ -13,6 +13,8 @@ import com.markerhub.mapper.BlogMapper;
 import com.markerhub.mapper.BrowseMapper;
 import com.markerhub.mapper.UserMapper;
 import com.markerhub.service.BlogService;
+import com.markerhub.service.OtherService;
+import com.markerhub.service.impl.OtherServiceImpl;
 import com.markerhub.util.RedisUtil;
 import com.markerhub.util.ShiroUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -40,6 +42,8 @@ import java.util.function.Consumer;
  */
 @RestController
 public class BlogController {
+    @Autowired
+    OtherService otherService;
     @Autowired
     RedisUtil redisUtil;
     @Autowired
@@ -122,7 +126,7 @@ public class BlogController {
             temp.setPlate(blog.getPlate());
         }
 
-        BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status","plate");
+        BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status","plate","avatar");
         temp.setRecent(LocalDateTime.now());
         temp.setAuthor(user.getNickname());
         blogService.saveOrUpdate(temp);
@@ -152,10 +156,8 @@ public class BlogController {
         BeanUtil.copyProperties(blog, temp, "id", "userId", "created", "status","plate");
         temp.setRecent(LocalDateTime.now());
         temp.setAuthor(user.getNickname());
+        temp.setAvatar(user.getAvatar());
         blogService.saveOrUpdate(temp);
-        Integer maxblogid= (Integer) redisUtil.get("blogIdMax");
-        maxblogid+=1;
-        redisUtil.set("blogIdMax",maxblogid);
         return Result.succ(null);
     }
 

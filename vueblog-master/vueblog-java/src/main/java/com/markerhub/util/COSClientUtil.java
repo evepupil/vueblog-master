@@ -30,9 +30,9 @@ public class COSClientUtil {
     // 存储通名称			替换成自己的
     private static final String bucketName = "blog-1257029975";
     //secretId 			替换成自己的
-    private static final String secretId = "";
+    private static final String secretId = "AKIDjMmz0nLgmhRyHNEpCKEtJUQ7aonX2HH3";
     // secretKey		        替换成自己的
-    private static final String secretKey = "";
+    private static final String secretKey = "ZtyoQoxsYzB9sMcdPwEH6g291f7MM7ez";
 
     // 1 初始化用户身份信息(secretId, secretKey)
     private static final COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);

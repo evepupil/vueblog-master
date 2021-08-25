@@ -2,9 +2,11 @@ package com.markerhub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.markerhub.entity.Blog;
+import com.markerhub.entity.Comment;
 import com.markerhub.entity.Star;
 import com.markerhub.entity.User;
 import com.markerhub.mapper.BlogMapper;
+import com.markerhub.mapper.CommentMapper;
 import com.markerhub.mapper.StarMapper;
 import com.markerhub.mapper.UserMapper;
 import com.markerhub.service.UserService;
@@ -31,6 +33,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     StarMapper starMapper;
     @Autowired
     BlogMapper blogMapper;
+    @Autowired
+    CommentMapper commentMapper;
 
     public User getUser() {
         User visituser = userMapper.selectById(ShiroUtil.getProfile().getId());
@@ -53,5 +57,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             starlist.add(b);
         }
         return starlist;
+    }
+    @Override
+    public void updateHeadImg() {
+        ArrayList<Blog> blogArrayList= (ArrayList<Blog>) blogMapper.selectList(new QueryWrapper<>());
+        for(Blog blog : blogArrayList){
+            User user=userMapper.selectById(blog.getUserId());
+            blog.setAvatar(user.getAvatar());
+            blogMapper.updateById(blog);
+        }
+        ArrayList<Comment> commentArrayList= (ArrayList<Comment>) commentMapper.selectList(new QueryWrapper<>());
+        for(Comment comment :commentArrayList){
+            User user=userMapper.selectById(comment.getUserid());
+            comment.setAvatar(user.getAvatar());
+            commentMapper.updateById(comment);
+        }
+
+
     }
 }

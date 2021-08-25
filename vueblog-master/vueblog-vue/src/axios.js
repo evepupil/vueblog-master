@@ -5,6 +5,7 @@ import store from './store'
 
 
 axios.defaults.baseURL = "http://localhost:8081"
+//47.101.194.177
 
 // 前置拦截
 axios.interceptors.request.use(config => {
@@ -20,10 +21,13 @@ axios.interceptors.response.use(response => {
 
     if (res.code === 200) {
       return response
-    } else {
-
+    }
+    else if(res.code===400){
+        Element.Message.error(res.data, {duration: 3 * 1000})
+        return Promise.reject(response.data.data)
+    }
+    else {
       Element.Message.error('错了哦，这是一条错误消息', {duration: 3 * 1000})
-
       return Promise.reject(response.data.msg)
     }
   },

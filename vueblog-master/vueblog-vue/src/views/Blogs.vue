@@ -12,24 +12,46 @@
         <p class="restore"  value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm"> 最近回复于 {{blog.recent}}</p>
         <p>{{blog.description}}</p>
 
-        <p class="time" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" >发布于{{blog.created}}</p>
+
+
+        <div class="publisher">
+          <div class="publisher-img">
+            <img :src=blog.avatar alt="">
+          </div>
+          <p class="publisher-name"v-text="blog.author"> 茶摘</p>
+          <p class="time" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm" >发布于{{blog.created}}</p>
+        </div>
+
         <div class="interactive">
           <p class="browse">
-            <span>浏览</span>
+            <span>
+              <i class="el-icon-view"></i>
+            </span>
             {{blog.browse}}
           </p>
+          <p class="star">
+            <span>
+              <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#blog-like"></use>
+              </svg>
+            </span>
+            {{blog.star}}
+          </p>
           <p class="favorite">
-            <span>回复</span>
+            <span>
+              <i class="el-icon-chat-round"></i>
+            </span>
             {{blog.commentnums}}
           </p>
           <p class="favorite">
-            <span>收藏</span>
+            <span>
+              <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#blog-star"></use>
+              </svg>
+            </span>
             {{blog.favorite}}
           </p>
-          <p class="star">
-            <span>点赞</span>
-            {{blog.star}}
-          </p>
+
         </div>
 
       </el-card>
@@ -84,6 +106,7 @@ export default {
 
 <style scoped>
 .article{
+  padding: 0;
   margin-top: 10px;
   margin-bottom: 10px;
 }
@@ -97,19 +120,15 @@ a{
   font-weight: bold;
   font-size: 25px;
 }
-.time{
-  float: right;
-  margin-top: 55px;
-}
 .interactive{
   height: 20px;
   float: right;
-  margin-right: -185px;
+  margin-top: -50px;
 }
 .interactive p{
   display: inline-block;
   font-size: 14px;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 .interactive span{
   font-size: 14px;
@@ -117,5 +136,27 @@ a{
 .restore{
   color: #888888e3;
   font-size: 12px;
+}
+.publisher{
+  margin-top: 45px;
+}
+.publisher-name{
+  font-weight: bold;
+}
+.publisher-img{
+  width: 3rem;
+  height: 3rem;
+  float: left;
+  margin-right: 10px;
+}
+.publisher-img img{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.time{
+  color: #888888e3;
+  font-size: 12px;
+  margin-top: -6px;
 }
 </style>

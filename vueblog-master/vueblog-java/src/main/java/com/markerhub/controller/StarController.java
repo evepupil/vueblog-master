@@ -31,7 +31,7 @@ public class StarController {
             return Result.fail("请先登录");
         int res=starService.starBlog(blogid,userid);
         if(res==2){
-            return Result.fail("取消收藏");
+            return Result.succ("取消收藏");
 
         }
         if(res==1){

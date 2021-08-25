@@ -2,6 +2,7 @@ package com.markerhub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.markerhub.entity.Blog;
 import com.markerhub.entity.Comment;
 import com.markerhub.entity.Like;
 import com.markerhub.mapper.CommentMapper;
@@ -29,13 +30,18 @@ public class LikeServiceImpl  implements LikeService {
     BlogService blogService;
     @Override
     public int likeBlog(Long blogid, Long userid){
+        Blog blog=blogService.getById(blogid);
         QueryWrapper<Like> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("userid",userid).eq("blogid",blogid);
         Like old=likeMapper.selectOne(queryWrapper);
         if(old!=null){
+            blog.setFavorite(blog.getFavorite()-1);
+            blogService.updateById(blog);
             likeMapper.delete(queryWrapper);
             return 2;
         }
+        blog.setFavorite(blog.getFavorite()+1);
+        blogService.updateById(blog);
         return likeMapper.insert(new Like().setBlogid(blogid)
         .setUserid(userid)
         .setTime(LocalDateTime.now())
@@ -48,6 +54,4 @@ public class LikeServiceImpl  implements LikeService {
         queryWrapper.eq("belikeduserid",userid).orderByDesc("time");
         return (ArrayList<Like>) likeMapper.selectList(queryWrapper);
     }
-
-    ;
 }

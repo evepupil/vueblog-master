@@ -45,7 +45,6 @@ public class UserController {
     //@RequiresAuthentication
     @GetMapping("/usercenter")
     public Result index(@RequestParam String id) {
-        System.out.println(id);
         Long userid=Long.parseLong(id);
         User user = userService.getById(userid);
         //User visitUser = userService.getUser();
@@ -79,7 +78,7 @@ public class UserController {
             .put("blogs",res2)
                     .map());
         }
-        return Result.succ("No");
+        return Result.fail("没有权限");
     }
 
     @RequiresAuthentication
@@ -89,7 +88,7 @@ public class UserController {
         if(userid==user.getId()){
             return Result.succ(userService.getMystar(userid));
         }
-        return Result.fail("No");
+        return Result.fail("没有权限");
     }
     @GetMapping("/recentblog")
     public Result recentBlog(@RequestParam Long userid){
@@ -102,7 +101,7 @@ public class UserController {
                                  @RequestParam Long userid){
         User user=userService.getUser();
         if(user.getId()!=userid){
-            return Result.fail("No");
+            return Result.fail("没有权限");
         }
         String fileName=file.getOriginalFilename();
         COSClientUtil cosClientUtil=new COSClientUtil();
@@ -114,13 +113,14 @@ public class UserController {
         }
         user.setAvatar(cosClientUtil.getUrl("/head/") + userid + "/" + fileName);
         userService.updateById(user);
+        userService.updateHeadImg();
         return Result.succ(cosClientUtil.getUrl("/head/") + userid + "/" + fileName);
     }
     @RequiresAuthentication
     @GetMapping("/likeme")
     public  Result likeMe(@RequestParam Long userid){
         if(userService.getUser().getId()!=userid)
-            return Result.fail("No");
+            return Result.fail("没有权限");
         ArrayList<Like> likeArrayList=likeService.likeMe(userid);
         ArrayList<HashMap<String,String>> bloginfo=new ArrayList<>();
         ArrayList<User> userArrayList=new ArrayList<>();
@@ -141,5 +141,32 @@ public class UserController {
         .put("like",likeArrayList)
                 .put("blog",bloginfo)
                 .put("user",userArrayList).map());
+    }
+    @RequiresAuthentication
+    @RequestMapping("/usercenter/updatebasic")
+    public Result updateNickname(@RequestParam String nickname,
+                                 @RequestParam String sign,
+                        @RequestParam Long userid) {
+        if(userService.getUser().getId()==userid){
+            User user=userService.getById(userid);
+            user.setSign(sign);
+            user.setNickname(nickname);
+            userService.updateById(user);
+            return Result.succ("Ok");
+        }
+        return Result.fail("没有权限");
+    }
+
+    @RequiresAuthentication
+    @RequestMapping("/usercenter/updateemail")
+    public Result updateEmail(@RequestParam String email,
+                             @RequestParam Long userid) {
+        if (userService.getUser().getId() == userid) {
+            User user = userService.getById(userid);
+            user.setEmail(email);
+            userService.updateById(user);
+            return Result.succ("Ok");
+        }
+        return Result.fail("没有权限");
     }
 }

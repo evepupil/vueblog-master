@@ -11,9 +11,15 @@
 </template>
 
 <style>
-  #app {
-    max-width: 960px;
-    margin: 0 auto;
-  }
+#app {
+  max-width: 960px;
+  margin: 0 auto;
+}
+.icon{
+  width: 1em; height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
 
 </style>

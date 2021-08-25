@@ -18,4 +18,5 @@ public interface UserService extends IService<User> {
     User getUser ();
     int  saveUser(User user);
     ArrayList<Blog> getMystar(Long userid);
+    void updateHeadImg();
 }

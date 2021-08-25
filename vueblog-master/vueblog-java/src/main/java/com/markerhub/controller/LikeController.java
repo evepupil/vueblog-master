@@ -23,7 +23,7 @@ public class LikeController {
     @Autowired
     LikeServiceImpl likeService;
 
-@RequiresAuthentication
+    @RequiresAuthentication
     @GetMapping("/likeblog")
     public Result like(@RequestParam Long blogid){
     User visitUser = userService.getUser();

@@ -11,11 +11,11 @@
             </div>
             <div class="little-box">
               <span class="title-two">昵称</span>
-              <el-input v-model="username" placeholder="请输入内容" :disabled=basicsdisabled class="input"></el-input>
+              <el-input v-model="username" maxlength="6" minlength="1" placeholder="请输入内容" :disabled=basicsdisabled class="input"></el-input>
             </div>
             <div class="little-box">
               <span class="title-two">签名</span>
-              <el-input v-model="signature" placeholder="请输入内容" :disabled=basicsdisabled class="input"></el-input>
+              <el-input type="textarea" show-word-limit maxlength="25"  v-model="signature" placeholder="请输入内容" :disabled=basicsdisabled class="input"></el-input>
             </div>
         </div>
         
@@ -36,7 +36,8 @@
               <p class="title">修改头像</p>
             <el-upload
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="/uploadheadimg"
+              :http-request="uploadheadimg"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload">
@@ -59,6 +60,8 @@ export default {
   components: {UserCenterCom},
   data(){
     return{
+      headers:"",
+      action:"",
       userinfo:null,
       isOwn:false,
       userid:null,
@@ -66,7 +69,6 @@ export default {
       signature:'',
       imageUrl: '',
       basicsdisabled:true,
-
       email:'',
       emaildisabled:true,
 
@@ -76,43 +78,98 @@ export default {
 
   },
   methods:{
-
+    uploadheadimg(f){
+      let data=new FormData
+      data.append("file",f.file)
+      data.append("userid",this.userid)
+      this.$axios.post(f.action, data, {
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res => {
+       this.handleAvatarSuccess(res)
+          })
+      },
     SettingContainer(){
+      if(!this.basicsdisabled&&this.username=='')
+      {
+        this.$message.error("昵称不能为空！")
+        return
+      }
       this.basicsdisabled = !this.basicsdisabled;
+      if(this.basicsdisabled){
+        let data=new FormData
+        data.append("nickname",this.username)
+        data.append("sign",this.signature)
+        data.append("userid",this.$route.params.userid)
+        this.$axios.post('/usercenter/updatebasic', data, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          if(res.data.data=='Ok'){
+            this.refresh()
+            this.$message.success("修改成功")
+          }
+
+          else
+            this.$message.error("修改失败")
+        })
+      }
     },
     SettingContainer2(){
       this.emaildisabled = !this.emaildisabled;
+      if(this.emaildisabled){
+        let data=new FormData
+        data.append("email",this.email)
+        data.append("userid",this.$route.params.userid)
+        this.$axios.post('/usercenter/updateemail', data, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          if(res.data.data=='Ok'){
+            this.refresh()
+            this.$message.success("修改成功")
+          }
+          else
+            this.$message.error("修改失败")
+        })
+
+      }
     },
-    handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
+    handleAvatarSuccess(res) {
+
+        this.imageUrl = encodeURI(res.data.data);
+        this.$message.success("修改成功")
+        this.refresh()
       },
       beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
+        const isImg = file.type === 'image/jpeg'||'image/png'||'image/gif'||'image/bmp'||'image/jpg';
         const isLt2M = file.size / 1024 / 1024 < 2;
 
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+        if (!isImg) {
+          this.$message.error('上传头像只能是图片格式!');
         }
         if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
+          this.$message.error('上传头像图片大小不能超过2MB!');
         }
-        return isJPG && isLt2M;
+        return isImg && isLt2M;
       },
     refresh() {
       const _this=this
+      _this.headers="Authorization:"+localStorage.getItem("token")
       const userid=this.$route.params.userid
       _this.userid=userid
-      console.log('userid--'+userid)
       const  visitor=_this.$store.getters.getVisit
       _this.isOwn=(visitor==userid)
       _this.$store.commit("SET_ISOWN",this.isOwn)
       _this.$axios.get('/usercenter?id='+userid).then(res=>{
+        this.$store.commit("SET_USERINFO", res.data.data)
         _this.userinfo=res.data.data
         _this.username=_this.userinfo.nickname
         _this.signature=_this.userinfo.sign
         _this.email=_this.userinfo.email
-        console.log('isown'+_this.isOwn)
-        console.log('--'+_this.userinfo)
       })
     }
   },

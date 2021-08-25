@@ -56,6 +56,7 @@ public class Blog implements Serializable {
     private Long userId;
     private Long browse;
     private String plate;
+    private String avatar;
 
 
 
