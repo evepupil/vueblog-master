@@ -74,7 +74,6 @@ public class OtherController {
             e.printStackTrace();
             return Result.succ("上传图片失败");
         }
-
         String uri = null;
         fileName = StringTransfer.stringToLegal(fileName);
         System.out.println(cosClientUtil.getUrl("/article/") + blogid + "/" + fileName);

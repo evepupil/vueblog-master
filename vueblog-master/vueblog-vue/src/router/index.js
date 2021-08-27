@@ -12,10 +12,15 @@ import MyPost from "@/views/UserCenterViews/MyPost";
 import Collect from "@/views/UserCenterViews/Collect"
 import Like from "@/views/UserCenterViews/Like"
 import Reply from "@/views/UserCenterViews/Reply"
-
+import ChangePassword from "@/views/ChangePassword";
 Vue.use(VueRouter)
 mode:'hash'
 const routes = [
+  {
+    path: '/ChangePassword',
+    name:'ChangePassword',
+    component: ChangePassword
+  },
   {
     path: '/register',
     name:'Register',

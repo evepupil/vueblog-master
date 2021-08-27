@@ -1,20 +1,29 @@
 <template>
   <div>
     <el-container>
-      <el-header>
-        <img class="mlogo" src="https://www.markerhub.com/dist/images/logo/markerhub-logo.png" alt="">
-      </el-header>
+      
       <el-main>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+         <div class="header">
+            <el-page-header @back="goBack" content="登陆账号">
+            </el-page-header>
+        </div>
+         <div class="title">
+            <el-divider>登陆账号</el-divider>
+            <p>Login</p>
+        </div>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm center">
           <el-form-item label="用户名" prop="username">
             <el-input v-model="ruleForm.username"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input placeholder="请输入密码" type="password" v-model="ruleForm.password" show-password></el-input>
+            <el-input placeholder="请输入密码" type="password" v-model="ruleForm.password" show-password class="password"></el-input>
+            <span class="forge" @click="forgePassword">忘记密码?</span>
           </el-form-item>
+          
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
             <el-button @click="resetForm()">注册</el-button>
+            
           </el-form-item>
         </el-form>
 
@@ -40,7 +49,7 @@
           ],
           password: [
             { required: true, message: '请输入密码', trigger: 'change' },
-			{ min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+			  { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
           ]
         }
       };
@@ -74,6 +83,12 @@
       },
       resetForm() {
         this.$router.push("/register")
+      },
+      forgePassword(){
+        this.$router.push("/ChangePassword")
+      },
+      goBack(){
+        this.$router.push('/blogs')
       }
     }
   }
@@ -98,7 +113,6 @@
     /*background-color: #E9EEF3;*/
     color: #333;
     text-align: center;
-    line-height: 160px;
   }
 
   body > .el-container {
@@ -123,5 +137,25 @@
     max-width: 500px;
     margin: 0 auto;
   }
-
+  .forge{
+    font-size: 12px;
+    color: #B3C0D1;
+    cursor: pointer;
+  }
+  .title{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.title p{
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: .5rem;
+}
+.el-divider__text{
+    font-size: 24px;
+    letter-spacing: 1.5rem;
+}
+.center{
+  margin-right: 28%;
+}
 </style>

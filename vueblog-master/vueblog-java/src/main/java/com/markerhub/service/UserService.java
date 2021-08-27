@@ -19,4 +19,5 @@ public interface UserService extends IService<User> {
     int  saveUser(User user);
     ArrayList<Blog> getMystar(Long userid);
     void updateHeadImg();
+    void changePw(Long userid,String newPw);
 }

@@ -33,7 +33,6 @@ public class COSClientUtil {
     private static final String secretId = "";
     // secretKey		        替换成自己的
     private static final String secretKey = "";
-
     // 1 初始化用户身份信息(secretId, secretKey)
     private static final COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
     // 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224

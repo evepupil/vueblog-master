@@ -5,7 +5,9 @@ import com.markerhub.entity.Blog;
 import com.markerhub.entity.User;
 import com.markerhub.service.*;
 import com.markerhub.util.COSClientUtil;
+import com.markerhub.util.EmailCode;
 import com.markerhub.util.RedisUtil;
+import org.apache.commons.mail.EmailException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +32,10 @@ LikeService likeService;
 @Autowired
 OtherService otherService;
     @Test
-    void contextLoads() {
-        ArrayList<Blog> blogArrayList= (ArrayList<Blog>) blogService.getBaseMapper().selectList(new QueryWrapper<>());
-        for(Blog blog : blogArrayList){
-            User user=userService.getById(blog.getUserId());
-            blog.setAvatar(user.getAvatar());
-            blogService.updateById(blog);
-        }
+    void contextLoads() throws EmailException {
+        EmailCode e=new EmailCode();
+        EmailCode.sendMail("1173336706@qq.com",1,true);
+
 
     }
 

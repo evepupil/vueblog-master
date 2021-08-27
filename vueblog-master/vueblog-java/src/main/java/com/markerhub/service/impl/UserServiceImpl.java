@@ -1,5 +1,6 @@
 package com.markerhub.service.impl;
 
+import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.markerhub.entity.Blog;
 import com.markerhub.entity.Comment;
@@ -72,7 +73,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             comment.setAvatar(user.getAvatar());
             commentMapper.updateById(comment);
         }
+    }
 
-
+    @Override
+    public void changePw(Long userid, String newPw) {
+        User user=userMapper.selectById(userid);
+        user.setPassword(SecureUtil.md5(newPw));
+        userMapper.updateById(user);
     }
 }

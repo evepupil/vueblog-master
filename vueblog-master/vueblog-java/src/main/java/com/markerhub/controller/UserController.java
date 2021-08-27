@@ -14,7 +14,10 @@ import com.markerhub.service.LikeService;
 import com.markerhub.service.UserService;
 import com.markerhub.service.impl.BlogServiceImpl;
 import com.markerhub.util.COSClientUtil;
+import com.markerhub.util.EmailCode;
+import com.markerhub.util.RedisUtil;
 import com.markerhub.util.ShiroUtil;
+import org.apache.commons.mail.EmailException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +37,8 @@ import java.util.HashMap;
  */
 @RestController
 public class UserController {
+    @Autowired
+    RedisUtil redisUtil;
     @Autowired
     CommentService commentService;
     @Autowired
@@ -162,11 +167,61 @@ public class UserController {
     public Result updateEmail(@RequestParam String email,
                              @RequestParam Long userid) {
         if (userService.getUser().getId() == userid) {
-            User user = userService.getById(userid);
+            QueryWrapper<User> queryWrapper=new QueryWrapper();
+            queryWrapper.eq("email",email);
+            User user=userService.getOne(queryWrapper);
+            if(user!=null){
+                return Result.fail("邮箱已被绑定");
+            }
+            user = userService.getById(userid);
             user.setEmail(email);
             userService.updateById(user);
             return Result.succ("Ok");
         }
         return Result.fail("没有权限");
+    }
+    @PostMapping("/changePw")
+    public Result changePw(@RequestParam String email,
+                           @RequestParam String code,@RequestParam String newPw){
+        if(email.equals("")){
+            return Result.fail("请输入验证码");
+        }
+        String rightCode= (String) redisUtil.get(email);
+        System.out.println("zhengque:"+rightCode);
+        if(!code.equals(rightCode)){
+            return Result.fail("验证码错误");
+        }
+        QueryWrapper<User> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("email",email);
+        User user=userService.getOne(queryWrapper);
+        if(user==null){
+            return  Result.fail("邮箱绑定的用户不存在");
+        }
+        userService.changePw(user.getId(),newPw);
+        return Result.succ("Ok");
+    }
+    @PostMapping("/code")
+    public  Result code(@RequestParam String email,@RequestParam int state) throws EmailException {
+        QueryWrapper<User> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("email",email);
+        User user=userService.getOne(queryWrapper);
+        if(state==1){
+            if(user==null){
+                return  Result.fail("邮箱绑定的用户不存在");
+            }
+        }else if(state==0)
+        {
+            if(user!=null){
+                return  Result.fail("邮箱已被注册");
+            }
+        }
+        System.out.println(email);
+        String code=EmailCode.sendMail(email,1,true);
+        if(code!=null) {
+            redisUtil.setWithTime(email, code, 30 * 60);
+            return Result.succ("Ok");
+        }
+        return Result.fail("出错了");
+
     }
 }

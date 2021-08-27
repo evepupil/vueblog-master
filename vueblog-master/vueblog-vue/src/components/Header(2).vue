@@ -84,30 +84,21 @@ export default {
       })
     },
     refresh(){
-      console.log('refresh')
       this.$axios.get('/usercenter?id='+this.$store.getters.getUser.id).then(res=> {
         this.$store.commit("SET_USERINFO", res.data.data)
-        this.user.username = res.data.data.username
-        this.user.nickname = res.data.data.nickname
-        this.user.avatar = res.data.data.avatar
-        this.user.sign = res.data.data.sign
-        this.hasLogin = true
-        //console.log(res.data.data.nickname)
       })
-      // if(this.$store.getters.getUser.username) {
-      //   this.user.username = this.$store.getters.getUser.username
-      //   this.user.nickname = this.$store.getters.getUser.nickname
-      //   this.user.avatar = this.$store.getters.getUser.avatar
-      //   this.user.sign = this.$store.getters.getUser.sign
-      //   this.hasLogin = true
-      //   console.log(this.user.nickname)
-      // }
+      if(this.$store.getters.getUser.username) {
+        this.user.username = this.$store.getters.getUser.username
+        this.user.nickname = this.$store.getters.getUser.nickname
+        this.user.avatar = this.$store.getters.getUser.avatar
+        this.user.sign = this.$store.getters.getUser.sign
+        this.hasLogin = true
+      }
     }
   },
 
   created() {
     this.refresh()
-    setInterval(this.refresh, 10000);
   }
 }
 </script>

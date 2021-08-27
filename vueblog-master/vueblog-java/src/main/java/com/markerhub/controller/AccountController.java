@@ -11,6 +11,7 @@ import com.markerhub.mapper.UserMapper;
 import com.markerhub.service.UserService;
 import com.markerhub.util.DateTransfer;
 import com.markerhub.util.JwtUtils;
+import com.markerhub.util.RedisUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,7 @@ import org.springframework.format.datetime.joda.LocalDateParser;
 import org.springframework.format.datetime.joda.LocalDateTimeParser;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +33,8 @@ import java.util.Date;
 
 @RestController
 public class AccountController {
-
+@Autowired
+    RedisUtil redisUtil;
     @Autowired
     UserService userService;
 
@@ -80,26 +79,41 @@ public class AccountController {
     }
 
     @PostMapping("/register")
-    public Result register (@Validated @RequestBody LoginDto loginDto, HttpServletRequest request,
+    public Result register (@RequestParam String nickname,@RequestParam String email,
+                            @RequestParam String code, @RequestParam String username,
+                            @RequestParam String password,
+                            HttpServletRequest request,
                             HttpServletResponse response){
-        User user = userService.getOne(new QueryWrapper<User>().eq("username", loginDto.getUsername()));
+        User user = userService.getOne(new QueryWrapper<User>().eq("username", username));
         if(user!=null){
             return Result.fail("用户已存在");
         }
+        user = userService.getOne(new QueryWrapper<User>().eq("email", email));
+        if(user!=null){
+            return Result.fail("该邮箱已被绑定");
+        }
+        user = userService.getOne(new QueryWrapper<User>().eq("nickname", nickname));
+        if(user!=null){
+            return Result.fail("该昵称已被注册");
+        }
+        String rightCode= (String) redisUtil.get(email);
+        if(!code.equals(rightCode)){
+            return Result.fail("验证码错误");
+        }
+        int userNum=userMapper.selectCount(new QueryWrapper<>())+1;
         User newuser=new User();
         newuser.setLastLogin(DateTransfer.date2LocalDateTime(new Date()));
         newuser.setIp(request.getRemoteAddr())
-        .setUsername(loginDto.getUsername())
+        .setUsername(username)
         .setCreated(new Date())
-        .setPassword(SecureUtil.md5(loginDto.getPassword()))
+        .setPassword(SecureUtil.md5(password))
         .setStatus(0)
         .setLevel(0)
+                .setNickname(nickname)
+        .setEmail(email)
         ;
         userMapper.insert(newuser);
-        newuser =userMapper.selectOne(new QueryWrapper<User>().eq("username", loginDto.getUsername()));
         String jwt = jwtUtils.generateToken(newuser.getId());
-        newuser.setNickname("用户"+newuser.getId());
-        userMapper.updateById(newuser);
         response.setHeader("Authorization", jwt);
         response.setHeader("Access-control-Expose-Headers", "Authorization");
         return Result.succ(user);

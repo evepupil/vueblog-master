@@ -26,20 +26,20 @@ export default new Vuex.Store({
     },
     SET_USERINFO: (state, userInfo) => {
       state.userInfo = userInfo
-      sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
+      localStorage.setItem("userInfo", JSON.stringify(userInfo))
     },
     REMOVE_INFO: (state) => {
       state.token = ''
       state.userInfo = {}
       localStorage.setItem("token", '')
-      sessionStorage.setItem("userInfo", JSON.stringify(''))
+      localStorage.setItem("userInfo", JSON.stringify(''))
     }
 
   },
   getters: {
     // get
     getUser: state => {
-      return state.userInfo
+      return JSON.parse(localStorage.getItem('userInfo'))
     },
     getVisit:state => {
       return state.visitUser
